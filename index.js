@@ -29,12 +29,12 @@ app.get("/certificates", async (req, res) => {
 });
 app.get("/person/:id", async (req, res) => {
   console.log(`${selectNow()} Info - called from person `);
-  await getPerson(req.body);
+  await getPerson(req.body.id);
   res.sendStatus(200);
 });
 app.get("/certificates/:id", async (req, res) => {
   console.log(`${selectNow()} Info - called from certificates `);
-  await getCertificate(req.body);
+  await getCertificate(req.body.id);
   res.sendStatus(200);
 });
 

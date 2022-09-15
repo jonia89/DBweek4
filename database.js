@@ -20,56 +20,60 @@ async function selectNow() {
 }
 //selectNow();
 
-async function insertPerson() {
+async function insertPerson(name, age, student) {
   try {
     const res = await pool.query(
-      `INSERT INTO person(name, age, student) VALUES ($1, $2, $3)`,
-      values
+      `INSERT INTO person(name, age, student) VALUES ($1, $2, $3);`,
+      [name, age, student]
     );
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
   }
 }
 
-async function insertCert() {
+async function insertCert(name, person_id) {
   try {
     const res = await pool.query(
       "INSERT INTO certificates(name, person_id) VALUES($1, $2) RETURNING *",
-      values
+      [name, person_id]
     );
   } catch (err) {
     console.log("Jotain meni vikaan...", err.stack);
   }
 }
-async function updatePerson() {
+async function updatePerson(id) {
   try {
     const res = await pool.query(
-      `UPDATE person SET student=false WHERE name = 'Seppo'`
+      `UPDATE person SET student=false WHERE id = $1`,
+      [id]
     );
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
   }
 }
-async function updateCert() {
+async function updateCert(person_id) {
   try {
     const res = await pool.query(
-      `UPDATE certificates SET name='Joni' WHERE name = 'Seppo'`
+      `UPDATE certificates SET name=$2 WHERE person_id = $3`,
+      [person_id]
     );
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
   }
 }
 
-async function deletePerson() {
+async function deletePerson(id) {
   try {
-    const res = await pool.query(`DELETE FROM person WHERE id = 44`);
+    const res = await pool.query(`DELETE FROM person WHERE id = $1`, [id]);
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
   }
 }
-async function deleteCert() {
+async function deleteCert(id) {
   try {
-    const res = await pool.query(`DELETE FROM certificates WHERE id = 13`);
+    const res = await pool.query(`DELETE FROM certificates WHERE id = $1`, [
+      id,
+    ]);
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
   }
@@ -84,9 +88,9 @@ async function getAllPers() {
   }
 }
 
-async function getPerson() {
+async function getPerson(id) {
   try {
-    const res = await pool.query(`SELECT name FROM person`);
+    const res = await pool.query(`SELECT name FROM person WHERE id =$1`, [id]);
     console.log(res.rows[0]);
   } catch (err) {
     console.log("Jotain meni vikaan...", err);
@@ -102,10 +106,11 @@ async function getAllCert() {
   }
 }
 
-async function getCertificate() {
+async function getCertificate(person_id) {
   try {
     const res = await pool.query(
-      `SELECT name FROM certificates WHERE person_id = 1`
+      `SELECT name FROM certificates WHERE person_id = $3`,
+      [person_id]
     );
     console.log(res.rows[0]);
   } catch (err) {
